@@ -4,6 +4,7 @@ Donate link: http://vrypan.net/log/ffdirect/
 Tags: friendfeed
 Requires at least: 2.7.0
 Tested up to: 2.8
+Stable tag: 0.3
 
 FFDirect will submit your posts to your friendfeed.com account the moment they are published.
 
