@@ -106,7 +106,7 @@ add_option('ffdirect_body_as_comment','','','yes') ;
 add_option('ffdirect_url_autotag','','','yes') ;
 
 function ffdirect_admin_menu() {
-	add_options_page('FF Direct Options', 'FF Direct', 8, 'ff-direct', 'ffdirect_options');
+	add_options_page('FF Direct Options', 'FFDirect', 8, 'ff-direct', 'ffdirect_options');
 }
 
 function ffdirect_options() {
@@ -128,7 +128,7 @@ function ffdirect_options() {
 		echo '<div class="updated"><p><strong>' . 'Options saved.' .  '</strong></p></div> ' ;
 	}
 
-	echo '<p>FF-Direct posting options.</p>';
+	echo '<p>FFDirect posting options.</p>';
 	echo '<form method="post" action="">' ;
 	echo '<input type="hidden" name="ffdirect_set" value="Y" />' ;
 	wp_nonce_field('update-options');
@@ -187,6 +187,8 @@ function ffdirect_options() {
 	echo '<input type="hidden" name="page_options" value="ffdirect_ff_user,ffdirect_ff_key,ffdirect_title_append,ffdirect_body_as_comment,ffdirect_url_autotag" />';
 	
 	echo '<p class="submit"> <input type="submit" class="button-primary" value="' . 'Update Options' .' " /> </p> </form> ' ;
+
+	echo '<p><a href="http://vrypan.net/log/ffdirect/" target="_new">visit the FFDirect homepage</a>.</p>
 	echo '</div>';
 
 }
