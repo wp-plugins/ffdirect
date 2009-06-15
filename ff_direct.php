@@ -188,7 +188,7 @@ function ffdirect_options() {
 	
 	echo '<p class="submit"> <input type="submit" class="button-primary" value="' . 'Update Options' .' " /> </p> </form> ' ;
 
-	echo '<p><a href="http://vrypan.net/log/ffdirect/" target="_new">visit the FFDirect homepage</a>.</p>
+	echo '<p><a href="http://vrypan.net/log/ffdirect/" target="_new">visit the FFDirect homepage</a>.</p>' ;
 	echo '</div>';
 
 }
