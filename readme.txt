@@ -13,9 +13,11 @@ FFDirect will submit your posts to your friendfeed.com account the moment they a
 
 FFDirect will submit your posts to your friendfeed.com account the moment they are published.
 Some reasons to prefer FFDirect instead of using your feed:
+
 * Images included in your posts will also be submited and visible in the corresponding friendfeed entry.
 * The same applies to any link to audio (.mp3, .wav, .aac) files.
 * Your posts will appear in friendfeed the moment you publish them.
+* Google Analytics-friendly URL tagging.
 
 == Installation ==
 
