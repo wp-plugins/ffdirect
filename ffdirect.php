@@ -3,7 +3,7 @@
 Plugin Name: Friendfeed Direct Post
 Plugin URI: http://vrypan.net/log/ffdirect/
 Description: Post directly to friendfeed.com any article published.
-Version: 0.5
+Version: 0.5.2
 License: GPL2
 Author: Panayotis Vryonis 
 Author URI: http://vrypan.net/
