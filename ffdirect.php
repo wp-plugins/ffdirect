@@ -3,7 +3,7 @@
 Plugin Name: Friendfeed Direct Post
 Plugin URI: http://vrypan.net/log/ffdirect/
 Description: Post directly to friendfeed.com any article published.
-Version: 0.5.2
+Version: 0.6.0
 License: GPL2
 Author: Panayotis Vryonis 
 Author URI: http://vrypan.net/
@@ -13,7 +13,7 @@ Min WP Version: 2.7
 require_once(dirname(__FILE__).'/friendfeed.php');
 function ffdirect_post($post_ID)  {
 
-	$via = array("name"=>"FFDirect", "url"=>"http://vrypan.net/log/ffdirect") ;
+	$via = 'ffdirect-264fa10a60' ;
 	# Original regexp code by Chirp Internet: www.chirp.com.au 
 	$regexp_img = "<img\s[^>]*src=(\"??)([^\" >]*?)\\1[^>]*\/>"; 
 	$regexp_href = "<a\s[^>]*href=(\"??)([^\"]*)\\1[^>]*>(.*)<\/a>";
