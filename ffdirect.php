@@ -91,6 +91,13 @@ function ffdirect_post($post_ID)  {
 		$images,
 		null, $via,
 		$audio );
+	$ff_entry_id = $entry->id ;
+
+	/* keep the FF enry ID in a custom field. 
+	 * It will be used by future versions of FFDirect, but it's nice to have it today.
+	 */
+	add_post_meta( $post_ID, 'friendfeed_entry_id', $ff_entry_id, true ) or 
+		update_post_meta($post_ID, 'friendfeed_entry_id', $ff_entry_id ) ;
 
 	return $post_ID;
 }
