@@ -11,6 +11,8 @@ Min WP Version: 2.7
 */
 
 require_once(dirname(__FILE__).'/friendfeed.php');
+require_once 'ffdirect_cache.php' ;
+
 function ffdirect_post($post_ID)  {
 
 	$via = 'ffdirect-264fa10a60' ;
@@ -218,13 +220,19 @@ function ffdirect_the_content($content='') {
 	}
 	global $id ;
 	$post_ID = $id ;
-	$snippet = wp_cache_get('ffdirect_post_'. $post_ID, 'ffdirect');
+
+	if (is_feed()) {
+		$entry_id = get_post_meta($post_ID, 'friendfeed_entry_id', true) ;
+		if (!$entry_id) return $content ;
+		return $content . "<p class=\"ffdirect\"><a href=\"http://friendfeed.com/e/$entry_id\">\"like\" this entry on friendfeed.com</a></p>" ;
+	} 
+
+	$ffdc = new ffdirect_cache() ;
+	$snippet = $ffdc->get('ffdirect_post_'. $post_ID);
 	if (false === $snippet ) {
 		$entry_id = get_post_meta($post_ID, 'friendfeed_entry_id', true) ;
 		if (!$entry_id) return $content ;
-		if (is_feed()) {
-			return $content . "<p class=\"ffdirect\"><a href=\"http://friendfeed.com/e/$entry_id\">\"like\" this entry on friendfeed.com</a></p>" ;
-		}
+
 		$friendfeed = new FriendFeed(get_option('ffdirect_ff_user'), get_option('ffdirect_ff_key'));
 		$ff_entry = $friendfeed->fetch('/api/feed/entry',array('entry_id'=>$entry_id)) ;
 
@@ -244,17 +252,17 @@ function ffdirect_the_content($content='') {
 		if ($likes) {
 			$snippet .= ' <img src="' . get_option('siteurl') .  '/wp-content/plugins/ffdirect/smile.png" /> ' ;
 			if ($likes==1) {
-				$snippet .= $ff_entry->entries[0]->likes[0]->user->nickname . ' liked it. ' ;
+				$snippet .= $ff_entry->entries[0]->likes[0]->user->name . ' liked it. ' ;
 			}
 			if ($likes==2) {
-				$snippet .= $ff_entry->entries[0]->likes[0]['user']['nickname'] . ' and ' .
-					$ff_entry->entries[0]->likes[1]['user']['nickname'] .
+				$snippet .= $ff_entry->entries[0]->likes[0]->user->name . ' and ' .
+					$ff_entry->entries[0]->likes[1]->user->name .
 					' liked it. ' ;
 			}
 			if ($likes>2) {
 				$other_count = $likes - 2 ;
-				$snippet .= $ff_entry->entries[0]->likes[0]['user']['nickname'] . ', ' .
-					$ff_entry->entries[0]->likes[1]['user']['nickname'] . ' and ' .
+				$snippet .= $ff_entry->entries[0]->likes[0]->user->name . ', ' .
+					$ff_entry->entries[0]->likes[1]->user->name . ' and ' .
 					$other_count . ' people ' .
 					' liked it. ' ;
 			}
@@ -262,10 +270,8 @@ function ffdirect_the_content($content='') {
 
 		$snippet .= "</p>" ;
 
-		// $snippet = "<p class=\"ffdirect\"><a href=\"http://friendfeed.com/e/$entry_id\">@Friendfeed: $likes people liked this -- $comments comments</a></p>" ;
-
-		wp_cache_set('ffdirect_post_'. $post_ID, $snippet, 'ffdirect', 60*30) ;
-	}
+		$ffdc->set('ffdirect_post_'. $post_ID, $snippet) ;
+	} 
 	return $content .= $snippet ;
 }
 
