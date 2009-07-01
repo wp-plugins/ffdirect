@@ -264,7 +264,7 @@ function ffdirect_the_content($content='') {
 
 		// $snippet = "<p class=\"ffdirect\"><a href=\"http://friendfeed.com/e/$entry_id\">@Friendfeed: $likes people liked this -- $comments comments</a></p>" ;
 
-		wp_cache_set('ffdirect_post_'. $post_ID, $snippet, 'ffdirect', 60*5) ;
+		wp_cache_set('ffdirect_post_'. $post_ID, $snippet, 'ffdirect', 60*30) ;
 	}
 	return $content .= $snippet ;
 }
