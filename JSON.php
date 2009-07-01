@@ -1,4 +1,6 @@
 <?php
+if (!class_exists('Services_JSON')) {
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -778,29 +780,28 @@ class Services_JSON
 
 if (class_exists('PEAR_Error')) {
 
-    class Services_JSON_Error extends PEAR_Error
-    {
-        function Services_JSON_Error($message = 'unknown error', $code = null,
-                                     $mode = null, $options = null, $userinfo = null)
+        class Services_JSON_Error extends PEAR_Error
         {
-            parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
+            function Services_JSON_Error($message = 'unknown error', $code = null,
+                                        $mode = null, $options = null, $userinfo = null)
+            {
+                parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
+            }
         }
-    }
-
 } else {
 
     /**
      * @todo Ultimately, this class shall be descended from PEAR_Error
      */
-    class Services_JSON_Error
-    {
-        function Services_JSON_Error($message = 'unknown error', $code = null,
-                                     $mode = null, $options = null, $userinfo = null)
+        class Services_JSON_Error
         {
-
+            function Services_JSON_Error($message = 'unknown error', $code = null,
+                                        $mode = null, $options = null, $userinfo = null)
+            {
+    
+            }
         }
-    }
-
 }
     
+} // ENDIF class_exists
 ?>
