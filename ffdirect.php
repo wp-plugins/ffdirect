@@ -3,7 +3,7 @@
 Plugin Name: Friendfeed Direct Post
 Plugin URI: http://vrypan.net/log/ffdirect/
 Description: Post directly to friendfeed.com any article published.
-Version: 0.6.0
+Version: 0.6.1
 License: GPL2
 Author: Panayotis Vryonis 
 Author URI: http://vrypan.net/
@@ -106,11 +106,14 @@ add_action('new_to_publish','ffdirect_post');
 add_action('draft_to_publish','ffdirect_post');
 
 add_action('admin_menu', 'ffdirect_admin_menu');
-add_option("ffdirect_ff_user", '', '', 'no');
-add_option("ffdirect_ff_key", '', '', 'no');
+add_option("ffdirect_ff_user", '', '', 'yes');
+add_option("ffdirect_ff_key", '', '', 'yes');
 add_option('ffdirect_title_append','','','yes') ;
 add_option('ffdirect_body_as_comment','','','yes') ;
 add_option('ffdirect_url_autotag','','','yes') ;
+add_option('ffdirect_ff2blog','','','yes') ;
+
+add_filter('the_content','ffdirect_the_content') ;
 
 function ffdirect_admin_menu() {
 	add_options_page('FF Direct Options', 'FFDirect', 8, 'ff-direct', 'ffdirect_options');
@@ -126,6 +129,7 @@ function ffdirect_options() {
 		update_option(ffdirect_title_append, $_POST['ffdirect_title_append'] ) ;
 		update_option(ffdirect_body_as_comment, $_POST['ffdirect_body_as_comment'] ) ;
 		update_option(ffdirect_url_autotag, $_POST['ffdirect_url_autotag'] ) ;
+		update_option(ffdirect_ff2blog, $_POST['ffdirect_ff2blog'] ) ;
 
 		$friendfeed = new FriendFeed(get_option('ffdirect_ff_user'), get_option('ffdirect_ff_key'));
 		$resp = $friendfeed->fetch_home_feed(null,0,1) ;
@@ -188,6 +192,14 @@ function ffdirect_options() {
 	echo '" />' ;
 	echo '</td></tr>' ;
 
+	echo '<tr valign="top">' ;
+	echo '<th scope="row">Show number of FF likes and comments at the end of posts published with FFDirect enabled.</th>' ;
+	echo '<td>' ;
+	echo '<input type="checkbox" name="ffdirect_ff2blog" value="1" ';
+	if  (get_option('ffdirect_ff2blog'))  echo ' checked ' ;
+	echo '" />' ;
+	echo '</td></tr>' ;
+
 	echo '</table>' ;
 
 	echo '<input type="hidden" name="action" value="update" /> ' ;
@@ -199,5 +211,64 @@ function ffdirect_options() {
 	echo '</div>';
 
 }
+
+function ffdirect_the_content($content='') {
+	if (!get_option('ffdirect_ff2blog')) {
+		return $content ;
+	}
+	global $id ;
+	$post_ID = $id ;
+	$snippet = wp_cache_get('ffdirect_post_'. $post_ID, 'ffdirect');
+	if (false === $snippet ) {
+		$entry_id = get_post_meta($post_ID, 'friendfeed_entry_id', true) ;
+		if (!$entry_id) return $content ;
+		if (is_feed()) {
+			return $content . "<p class=\"ffdirect\"><a href=\"http://friendfeed.com/e/$entry_id\">\"like\" this entry on friendfeed.com</a></p>" ;
+		}
+		$friendfeed = new FriendFeed(get_option('ffdirect_ff_user'), get_option('ffdirect_ff_key'));
+		$ff_entry = $friendfeed->fetch('/api/feed/entry',array('entry_id'=>$entry_id)) ;
+
+		$comments =  count($ff_entry->entries[0]->comments) ;
+		$likes =  count($ff_entry->entries[0]->likes)  ;
+
+
+		$snippet = "<p class=\"ffdirect\"><a href=\"http://friendfeed.com/e/$entry_id\">this entry on Friendfeed</a> " ;
+		if ($comments) {
+			$snippet .= ' - ' ;
+			if ($comments==1) {
+				$snippet .= $comments . ' comment.' ;
+			} else {
+				$snippet .= $comments . ' comments.' ;
+			}
+		}
+		if ($likes) {
+			$snippet .= ' <img src="' . get_option('siteurl') .  '/wp-content/plugins/ffdirect/smile.png" /> ' ;
+			if ($likes==1) {
+				$snippet .= $ff_entry->entries[0]->likes[0]->user->nickname . ' liked it. ' ;
+			}
+			if ($likes==2) {
+				$snippet .= $ff_entry->entries[0]->likes[0]['user']['nickname'] . ' and ' .
+					$ff_entry->entries[0]->likes[1]['user']['nickname'] .
+					' liked it. ' ;
+			}
+			if ($likes>2) {
+				$other_count = $likes - 2 ;
+				$snippet .= $ff_entry->entries[0]->likes[0]['user']['nickname'] . ', ' .
+					$ff_entry->entries[0]->likes[1]['user']['nickname'] . ' and ' .
+					$other_count . ' people ' .
+					' liked it. ' ;
+			}
+		}
+
+		$snippet .= "</p>" ;
+
+		// $snippet = "<p class=\"ffdirect\"><a href=\"http://friendfeed.com/e/$entry_id\">@Friendfeed: $likes people liked this -- $comments comments</a></p>" ;
+
+		wp_cache_set('ffdirect_post_'. $post_ID, $snippet, 'ffdirect', 60*5) ;
+	}
+	return $content .= $snippet ;
+}
+
+
 
 ?>
