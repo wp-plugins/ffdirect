@@ -3,7 +3,7 @@
 Plugin Name: Friendfeed Direct Post
 Plugin URI: http://vrypan.net/log/ffdirect/
 Description: Post directly to friendfeed.com any article published.
-Version: 0.7.0
+Version: 0.7.1
 License: GPL2
 Author: Panayotis Vryonis 
 Author URI: http://vrypan.net/
@@ -200,7 +200,7 @@ function ffdirect_options() {
 	echo '<input type="checkbox" name="ffdirect_ff2blog" value="1" ';
 	if  (get_option('ffdirect_ff2blog'))  echo ' checked ' ;
 	echo '" />' ;
-	echo '&nbsp;Please note that only your new posts will get this functionality.' ;
+	echo '<br/><small>Please note that only your new posts will get this functionality.</small>' ;
 	echo '</td></tr>' ;
 
 	echo '</table>' ;
@@ -264,7 +264,7 @@ function ffdirect_the_content($content='') {
 				$other_count = $likes - 2 ;
 				$snippet .= $ff_entry->entries[0]->likes[0]->user->name . ', ' .
 					$ff_entry->entries[0]->likes[1]->user->name . ' and ' .
-					$other_count . ' people ' .
+					$other_count . ' more ' .
 					' liked it. ' ;
 			}
 		}
